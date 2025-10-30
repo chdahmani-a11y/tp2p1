@@ -5,7 +5,7 @@ from unit import Unit
 class Semester(Unit):
     def __init__(self, name, units=None):
         super().__init__(name, coefficient=1)
-        self.units = units if units else []
+        self.units = units if units else []    
 
     def add_unit(self, unit):
         self.units.append(unit)
