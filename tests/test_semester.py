@@ -24,7 +24,7 @@ def semester_sample():
     u2 = Unit("UEM11", "UE Méthodologie")
     u2.add_module(m3)
     u2.add_module(m4)
-
+ 
     # Semester
     s = Semester("S1")
     s.add_unit(u1)
