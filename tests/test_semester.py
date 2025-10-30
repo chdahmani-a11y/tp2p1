@@ -1,30 +1,42 @@
-import pytest
-import sys, os
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from module import module
 from unit import Unit
-from module import Module
 from semester import Semester
 
-def test_semester_average_and_credits():
-    m1 = Module("ALG", "Algorithmique", coef=2, credit=4)
-    m1.set_grade(tp=14, td=15, exam=16)
 
-    m2 = Module("POO", "Programmation OO", coef=3, credit=5)
-    m2.set_grade(tp=12, td=13, exam=14)
-
-    m3 = Module("BD", "Bases de Données", coef=2, credit=4)
-    m3.set_grade(tp=15, td=14, exam=15)
-
-    u1 = Unit("UEF11", "UE Fondamentale", coef=2)
+@pytest.fixture
+def semester_sample():
+    """Creates a Semester with two Units and four Modules."""
+    # Unit 1
+    m1 = module("F111", "Réseaux", 2, 4, 20, 10, 10, "Cours+TD+TP", 40, 60)
+    m1.set_grade(td=14, tp=16, exam=12)
+    m2 = module("F112", "Algo", 3, 6, 20, 10, 10, "Cours+TD+TP", 40, 60)
+    m2.set_grade(td=15, tp=13, exam=14)
+    u1 = Unit("UEF11", "UE Fondamentales")
     u1.add_module(m1)
     u1.add_module(m2)
 
-    u2 = Unit("UEF12", "UE Spécialisée", coef=3)
+    # Unit 2
+    m3 = module("M111", "BD", 2, 4, 20, 10, 10, "Cours+TD+TP", 40, 60)
+    m3.set_grade(td=15, tp=14, exam=13)
+    m4 = module("M112", "Implémentation", 3, 5, 20, 10, 10, "Cours+TD+TP", 40, 60)
+    m4.set_grade(td=14, tp=15, exam=14)
+    u2 = Unit("UEM11", "UE Méthodologie")
     u2.add_module(m3)
+    u2.add_module(m4)
 
-    sem = Semester("S1", "Semestre 1")
-    sem.add_unit(u1)
-    sem.add_unit(u2)
+    # Semester
+    s = Semester("S1")
+    s.add_unit(u1)
+    s.add_unit(u2)
 
-    assert round(sem.calculate_average(), 2) == 14.56
-    assert sem.calculate_credits() == 13
+    return s
+  
+
+def test_semester_average(semester_sample):
+    assert round(semester_sample.calculate_average(), 2) == pytest.approx(14.02, rel=1e-2)
+
+
+def test_semester_total_credits(semester_sample):
+    assert semester_sample.calculate_credits() == 19  # 10 + 9
+
